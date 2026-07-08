@@ -49,7 +49,9 @@ export async function proxy(request: NextRequest) {
         pathname.startsWith('/services') ||
         pathname.startsWith('/accommodation') ||
         pathname.startsWith('/chat') ||
-        pathname.startsWith('/profile')
+        pathname.startsWith('/profile') ||
+        pathname.startsWith('/admin') ||
+        pathname.startsWith('/reviewer')
 
       if (isCoreRoute) {
         const { data: profile } = await supabase
@@ -71,7 +73,9 @@ export async function proxy(request: NextRequest) {
         pathname.startsWith('/services') ||
         pathname.startsWith('/accommodation') ||
         pathname.startsWith('/chat') ||
-        pathname.startsWith('/profile')
+        pathname.startsWith('/profile') ||
+        pathname.startsWith('/admin') ||
+        pathname.startsWith('/reviewer')
 
       if (isAppRoute) {
         return NextResponse.redirect(new URL('/login', request.url))
@@ -87,7 +91,9 @@ export async function proxy(request: NextRequest) {
       pathname.startsWith('/services') ||
       pathname.startsWith('/accommodation') ||
       pathname.startsWith('/chat') ||
-      pathname.startsWith('/profile')
+      pathname.startsWith('/profile') ||
+      pathname.startsWith('/admin') ||
+      pathname.startsWith('/reviewer')
 
     if (isAppRoute) {
       return NextResponse.redirect(new URL('/login', request.url))
