@@ -51,7 +51,14 @@ export default function RegisterPage() {
           email: data.email,
           password: data.password,
         })
-        if (loginError) throw new Error(loginError.message)
+        
+        if (loginError) {
+          if (loginError.message.toLowerCase().includes('confirm') || loginError.message.toLowerCase().includes('verify')) {
+            setGeneralError('SUCCESS_CONFIRMATION_REQUIRED')
+            return
+          }
+          throw new Error(loginError.message)
+        }
         
         router.push('/verify')
       }
@@ -149,7 +156,19 @@ export default function RegisterPage() {
 
           {/* Obsidian Card */}
           <div className="glass rounded-xl p-8 border border-border/80 shadow-[0_15px_50px_rgba(0,0,0,0.55)] bg-surface-lowest/70 backdrop-blur-xl relative overflow-hidden">
-            {generalError && (
+            {generalError === 'SUCCESS_CONFIRMATION_REQUIRED' ? (
+              <div className="mb-6 p-4 bg-brand-mint/10 border border-brand-mint/30 text-brand-mint text-xs rounded-lg font-medium flex items-start gap-2">
+                <svg className="w-4 h-4 mt-0.5 shrink-0 text-brand-mint" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l3-3z" clipRule="evenodd" />
+                </svg>
+                <div className="space-y-1">
+                  <p className="font-bold text-[13px] text-white">Account Created Successfully!</p>
+                  <p className="text-subtle leading-relaxed">
+                    A confirmation link has been sent to your email address. Please check your inbox and click the verification link to log in.
+                  </p>
+                </div>
+              </div>
+            ) : generalError && (
               <div className="mb-6 p-4 bg-error/10 border border-error/20 text-error text-xs rounded-lg font-medium flex items-start gap-2">
                 <svg className="w-4 h-4 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
