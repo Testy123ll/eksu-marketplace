@@ -43,15 +43,10 @@ export default function AdminPage() {
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
-
-  // Tab State
   const [activeTab, setActiveTab] = useState<'users' | 'listings'>('users')
-
-  // Search & Filter State
   const [userQuery, setUserQuery] = useState('')
   const [listingQuery, setListingQuery] = useState('')
 
-  // System Stats
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalStudents: 0,
@@ -61,7 +56,6 @@ export default function AdminPage() {
     tradeVolume: 0,
   })
 
-  // Data Arrays
   const [users, setUsers] = useState<UserProfile[]>([])
   const [listings, setListings] = useState<ListingItem[]>([])
 
@@ -79,8 +73,7 @@ export default function AdminPage() {
     }
     setCurrentUserId(user.id)
 
-    // Check if the current user is an admin
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('profiles')
       .select('is_admin')
       .eq('user_id', user.id)
@@ -96,7 +89,6 @@ export default function AdminPage() {
   }
 
   const loadAdminDashboardData = async () => {
-    // 1. Fetch System Stats
     const { data: profilesData } = await supabase.from('profiles').select('user_id, account_type')
     const { data: listingsData } = await supabase.from('listings').select('id, title, price, status, type, category, seller_id, is_boosted, created_at')
     const { data: escrowData } = await supabase.from('escrow_transactions').select('amount, status')
@@ -119,7 +111,6 @@ export default function AdminPage() {
       tradeVolume: totalVolume,
     })
 
-    // 2. Fetch User Directory List
     const { data: allUsers } = await supabase
       .from('profiles')
       .select('*')
@@ -127,7 +118,6 @@ export default function AdminPage() {
 
     setUsers((allUsers as UserProfile[]) || [])
 
-    // 3. Process Listings List with Seller names
     if (listingsData) {
       const userMap: Record<string, string> = {}
       profilesData?.forEach((p: any) => {
@@ -150,7 +140,6 @@ export default function AdminPage() {
     }
   }
 
-  // Toggle Admin role
   const handleToggleAdmin = async (userId: string, currentAdminVal: boolean) => {
     setActionLoading(`admin:${userId}`)
     try {
@@ -161,7 +150,6 @@ export default function AdminPage() {
 
       if (error) throw error
       
-      // Update state
       setUsers((prev) =>
         prev.map((u) => (u.user_id === userId ? { ...u, is_admin: !currentAdminVal } : u))
       )
@@ -173,7 +161,6 @@ export default function AdminPage() {
     }
   }
 
-  // Update verification status directly
   const handleVerifyDirect = async (userId: string, status: 'approved' | 'rejected') => {
     setActionLoading(`verify:${userId}`)
     try {
@@ -193,7 +180,6 @@ export default function AdminPage() {
     }
   }
 
-  // Delete Listing direct
   const handleDeleteListing = async (listingId: string) => {
     if (!confirm('Are you sure you want to delete this listing permanently?')) return
     setActionLoading(`delete_listing:${listingId}`)
@@ -210,7 +196,6 @@ export default function AdminPage() {
     }
   }
 
-  // Toggle listing boost status
   const handleToggleBoostListing = async (listingId: string, currentBoost: boolean) => {
     setActionLoading(`boost:${listingId}`)
     try {
@@ -232,7 +217,6 @@ export default function AdminPage() {
     }
   }
 
-  // Easy local debug: become admin tool
   const handleBecomeAdminDirect = async () => {
     setLoading(true)
     try {
@@ -273,9 +257,11 @@ export default function AdminPage() {
             </p>
           </div>
           <div className="flex flex-col gap-2 pt-2">
-            <Button variant="secondary" onClick={handleBecomeAdminDirect} className="text-xs font-mono">
-              [DEBUG]: Claim Admin Role
-            </Button>
+            {process.env.NODE_ENV === 'development' && (
+              <Button variant="secondary" onClick={handleBecomeAdminDirect} className="text-xs font-mono">
+                [DEBUG]: Claim Admin Role
+              </Button>
+            )}
             <Link href="/listings" className="text-xs font-mono text-brand-indigo hover:underline">
               ← Return to Campus Marketplace
             </Link>
@@ -285,7 +271,6 @@ export default function AdminPage() {
     )
   }
 
-  // Filter lists based on inputs
   const filteredUsers = users.filter((u) => {
     const displayName = (u.full_name || u.business_name || '').toLowerCase()
     return displayName.includes(userQuery.toLowerCase()) || u.user_id.includes(userQuery)
@@ -297,20 +282,18 @@ export default function AdminPage() {
 
   return (
     <div className="flex-1 max-w-7xl mx-auto w-full px-4 py-8 space-y-8 relative">
-      {/* Background gradients */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden -z-10">
         <div className="absolute -top-[10%] -left-[10%] w-[45%] h-[45%] rounded-full bg-brand-indigo/10 blur-[150px]" />
         <div className="absolute bottom-[20%] right-[-10%] w-[45%] h-[45%] rounded-full bg-brand-mint/5 blur-[150px]" />
       </div>
 
-      {/* Hero Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/40 pb-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-display font-extrabold tracking-tight">
             Platform Operations <span className="gradient-brand-text">Console</span>
           </h1>
           <p className="text-xs text-subtle font-mono mt-1">
-            Root node supervisor status: <span className="text-brand-mint font-bold uppercase">Active</span>
+            Root supervisor status: <span className="text-brand-mint font-bold uppercase">Active</span>
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -327,7 +310,6 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Statistics Ledger Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
         <Card className="p-4 flex flex-col justify-between" style={{ background: 'rgba(91,77,255,0.01)' }}>
           <span className="text-[10px] font-mono text-subtle uppercase tracking-wider">Total Users</span>
@@ -355,10 +337,8 @@ export default function AdminPage() {
         </Card>
       </div>
 
-      {/* Main Console Interface */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         
-        {/* Navigation Sidebar Panel */}
         <div className="lg:col-span-1 space-y-4">
           <Card className="p-5 space-y-4 bg-surface-low/50">
             <h3 className="font-mono text-[10px] font-bold text-primary uppercase tracking-widest border-b border-border/40 pb-2">
@@ -406,7 +386,6 @@ export default function AdminPage() {
           </Card>
         </div>
 
-        {/* Console Workspace Panel */}
         <div className="lg:col-span-3">
           <Card className="p-6 min-h-[400px] bg-surface-low/20">
             <AnimatePresence mode="wait">

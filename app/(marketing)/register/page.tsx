@@ -40,13 +40,11 @@ export default function RegisterPage() {
       if (authError) throw new Error(authError.message)
 
       if (authData.user) {
-        // If identities is empty, the user already exists in Supabase
         const isExistingUser = authData.user.identities && authData.user.identities.length === 0
         if (isExistingUser) {
           throw new Error('This email is already registered. Please sign in instead.')
         }
 
-        // Auto-login since trigger auto-confirms user
         const { error: loginError } = await supabase.auth.signInWithPassword({
           email: data.email,
           password: data.password,
@@ -71,13 +69,11 @@ export default function RegisterPage() {
 
   return (
     <div className="flex-1 flex flex-col lg:flex-row min-h-screen relative overflow-hidden bg-canvas text-primary">
-      {/* Background orbs */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="absolute top-[-10%] left-[-15%] w-[60%] h-[60%] rounded-full bg-brand-indigo/15 blur-[160px]" />
         <div className="absolute bottom-[-10%] right-[-15%] w-[60%] h-[60%] rounded-full bg-brand-mint/8 blur-[160px]" />
       </div>
 
-      {/* Left panel: Premium branding & features highlight */}
       <div className="hidden lg:flex flex-1 flex-col justify-between p-16 z-10 relative border-r border-border/20 bg-surface-lowest/40">
         <Link href="/" className="inline-flex items-center gap-2">
           <span className="font-display font-extrabold text-2xl gradient-brand-text">
@@ -127,7 +123,6 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* Right panel: Register form in glowing obsidian card */}
       <div className="flex-1 flex items-center justify-center p-6 sm:p-12 z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -135,7 +130,6 @@ export default function RegisterPage() {
           transition={{ duration: 0.6 }}
           className="w-full max-w-md"
         >
-          {/* Mobile branding */}
           <div className="text-center lg:hidden mb-8">
             <Link href="/" className="inline-flex items-center gap-2 mb-4">
               <span className="font-display font-extrabold text-2xl gradient-brand-text">
@@ -154,7 +148,6 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          {/* Obsidian Card */}
           <div className="glass rounded-xl p-8 border border-border/80 shadow-[0_15px_50px_rgba(0,0,0,0.55)] bg-surface-lowest/70 backdrop-blur-xl relative overflow-hidden">
             {generalError === 'SUCCESS_CONFIRMATION_REQUIRED' ? (
               <div className="mb-6 p-4 bg-brand-mint/10 border border-brand-mint/30 text-brand-mint text-xs rounded-lg font-medium flex items-start gap-2">

@@ -368,11 +368,13 @@ export default function ReviewerPage() {
               You are currently logged in with a non-moderator profile. To test the review panel, resolve listing reports, or disburse disputed escrows, activate dev-admin level.
             </p>
             
-            <div className="pt-4">
-              <Button variant="primary" className="w-full h-12 rounded-xl text-sm" onClick={handleBecomeAdmin}>
-                Become Admin (Dev Mode)
-              </Button>
-            </div>
+            {process.env.NODE_ENV === 'development' && (
+              <div className="pt-4">
+                <Button variant="primary" className="w-full h-12 rounded-xl text-sm" onClick={handleBecomeAdmin}>
+                  Become Admin (Dev Mode)
+                </Button>
+              </div>
+            )}
           </Card>
         </div>
       </div>
