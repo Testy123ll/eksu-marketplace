@@ -261,7 +261,22 @@ export default function VerifyPage() {
   const handleReset = async () => {
     if (!userId) return
     setLoading(true)
-    await supabase.from('profiles').delete().eq('user_id', userId)
+    await supabase
+      .from('profiles')
+      .update({
+        full_name: null,
+        business_name: null,
+        department: null,
+        level: null,
+        phone_number: null,
+        id_photo_url: null,
+        selfie_url: null,
+        verification_status: 'pending',
+        cac_photo_url: null,
+        shopfront_photo_url: null,
+        referral_vendor_code: null,
+      })
+      .eq('user_id', userId)
     setProfile(null)
     setStep('fork')
     setStudentForm({})
@@ -290,8 +305,7 @@ export default function VerifyPage() {
     )
   }
 
-  // --- Render Status screens ---
-  if (profile) {
+  if (profile && (profile.full_name || profile.business_name)) {
     if (profile.verification_status === 'pending') {
       return (
         <div className="flex-grow flex items-center justify-center bg-canvas px-6 py-12">
