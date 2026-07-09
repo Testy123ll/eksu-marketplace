@@ -39,12 +39,14 @@ export default function LoginPage() {
       if (authData.user) {
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
-          .select('verification_status')
+          .select('verification_status, is_admin')
           .eq('user_id', authData.user.id)
           .single()
 
         if (profileError || !profile) {
           router.push('/verify')
+        } else if (profile.is_admin) {
+          router.push('/admin')
         } else if (profile.verification_status === 'approved') {
           router.push('/listings')
         } else {
