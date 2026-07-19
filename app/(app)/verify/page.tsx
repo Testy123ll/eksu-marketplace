@@ -475,12 +475,12 @@ export default function VerifyPage() {
                   className="group cursor-pointer text-left border border-border/80 bg-surface-low hover:border-brand-indigo/60 p-6 flex flex-col gap-3 transition-all duration-300 rounded-sm relative shadow-md"
                 >
                   <div className="absolute top-0 right-0 px-2 py-0.5 bg-brand-indigo/15 text-brand-indigo border-l border-b border-border/60 font-mono text-[8px] uppercase font-bold tracking-wider rounded-bl-sm">
-                    STUDENT_VERIFICATION
+                    NIN_VERIFICATION
                   </div>
                   <div className="flex justify-between items-center mt-1">
                     <span className="text-lg font-display font-bold group-hover:text-brand-indigo transition-colors">I am a Student</span>
                     <span className="text-[8px] font-mono font-bold bg-brand-indigo/10 border border-brand-indigo/30 text-brand-indigo px-2 py-0.5 rounded-sm uppercase tracking-wider">
-                      ID Required
+                      NIN Required
                     </span>
                   </div>
                   <p className="text-xs text-muted leading-relaxed font-sans">
@@ -574,15 +574,15 @@ export default function VerifyPage() {
               <div className="border-2 border-border bg-surface-low p-6 rounded-sm font-mono text-xs text-primary shadow-2xl space-y-5">
                 <div>
                   <span className="text-[8px] font-bold tracking-widest text-brand-indigo uppercase border border-brand-indigo/30 bg-brand-indigo/10 px-2 py-0.5 rounded-sm">STEP 02 // DOCUMENTATION</span>
-                  <h2 className="text-xl font-display font-black uppercase mt-3 tracking-tight">Student ID Upload</h2>
+                  <h2 className="text-xl font-display font-black uppercase mt-3 tracking-tight">NIN Card/Slip Upload</h2>
                   <p className="text-[10px] text-subtle leading-relaxed mt-1">
-                    Upload an image of your physical EKSU student ID card or recent exam registration slip.
+                    Upload an image of your physical National Identification Number (NIN) card or slip.
                   </p>
                 </div>
 
                 {/* Specs Box (Structural Monospace details) */}
                 <div className="bg-canvas border border-border/80 p-3 rounded-sm text-[9px] text-muted space-y-1">
-                  <div>ENTRY_SPEC  : [STUDENT_ID_OR_COURSE_SLIP]</div>
+                  <div>ENTRY_SPEC  : [NIN_SLIP_OR_CARD]</div>
                   <div>MAX_FILESIZE: 5.0 MB</div>
                   <div>FORMATS     : .JPG, .JPEG, .PNG, .WEBP</div>
                   <div>STATUS      : {idPreview ? 'READY_FOR_UPLOAD' : 'AWAITING_INPUT'}</div>
@@ -591,7 +591,7 @@ export default function VerifyPage() {
                 <div className="flex flex-col items-center justify-center border border-dashed border-border/80 rounded-sm p-6 bg-canvas hover:border-brand-indigo/40 transition-colors relative min-h-[160px]">
                   {idPreview ? (
                     <div className="w-full flex flex-col items-center gap-3">
-                      <img src={idPreview} alt="Student ID Preview" className="max-h-40 object-contain border border-border rounded-sm" />
+                      <img src={idPreview} alt="NIN Preview" className="max-h-40 object-contain border border-border rounded-sm" />
                       <button className="text-[9px] text-error font-bold hover:underline uppercase tracking-wider" onClick={() => { setIdFile(null); setIdPreview(null); }}>
                         [ Remove Photo ]
                       </button>
@@ -601,7 +601,7 @@ export default function VerifyPage() {
                       <svg className="w-8 h-8 text-subtle" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
                       </svg>
-                      <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Select ID Photo</span>
+                      <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Select NIN Photo</span>
                       <span className="text-[9px] text-subtle">CLICK TO BROWSE LOCAL STORAGE</span>
                       <input type="file" accept="image/*" className="hidden" onChange={handleIdUploadChange} />
                     </label>
@@ -634,7 +634,7 @@ export default function VerifyPage() {
                   <span className="text-[8px] font-bold tracking-widest text-brand-indigo uppercase border border-brand-indigo/30 bg-brand-indigo/10 px-2 py-0.5 rounded-sm">STEP 03 // SECURITY_VERIFICATION</span>
                   <h2 className="text-xl font-display font-black uppercase mt-3 tracking-tight">Biometric Selfie</h2>
                   <p className="text-[10px] text-subtle leading-relaxed mt-1">
-                    Take a live web-camera selfie to verify image consistency against your uploaded student document ID.
+                    Take a live web-camera selfie to verify image consistency against your uploaded NIN document.
                   </p>
                 </div>
 

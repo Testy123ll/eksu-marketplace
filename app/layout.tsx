@@ -3,6 +3,7 @@ import { Outfit } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import LenisProvider from "@/components/motion/LenisProvider";
+import { ToastProvider } from "@/components/ui/ToastProvider";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -57,9 +58,11 @@ export default function RootLayout({
       className={`${outfit.variable} ${GeistSans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-canvas text-primary font-sans">
-        <LenisProvider>
-          {children}
-        </LenisProvider>
+        <ToastProvider>
+          <LenisProvider>
+            {children}
+          </LenisProvider>
+        </ToastProvider>
       </body>
     </html>
   );

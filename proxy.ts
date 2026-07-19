@@ -82,7 +82,6 @@ export async function proxy(request: NextRequest) {
       }
     }
   } catch (error) {
-    console.warn('Supabase authentication check failed in proxy:', error)
     
     // Fallback: If not logged in or DB offline, block access to all app routes
     const isAppRoute =

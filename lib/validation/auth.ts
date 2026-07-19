@@ -10,7 +10,7 @@ export const studentOnboardingSchema = z.object({
   department: z.string().min(2, 'Please enter a valid department'),
   level: z.coerce.number().min(100, 'Level must be at least 100').max(700, 'Level cannot exceed 700'),
   phoneNumber: z.string().regex(/^(\+234|0)[789][01]\d{8}$/, 'Please enter a valid Nigerian phone number (e.g. 08034567890)'),
-  idPhotoUrl: z.string().min(1, 'Please upload a photo of your Student ID or course slip'),
+  idPhotoUrl: z.string().min(1, 'Please upload a photo of your NIN slip or card'),
   selfieUrl: z.string().min(1, 'Please take a live selfie'),
 })
 

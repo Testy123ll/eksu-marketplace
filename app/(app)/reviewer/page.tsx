@@ -505,11 +505,11 @@ export default function ReviewerPage() {
                         {/* ID and Selfie images */}
                         <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <p className="text-[9px] font-bold text-subtle uppercase tracking-wider">ID Document Photo</p>
+                            <p className="text-[9px] font-bold text-subtle uppercase tracking-wider">NIN Document Photo</p>
                             <div className="border border-border rounded-sm overflow-hidden bg-canvas h-44 flex items-center justify-center relative">
                               {p.id_photo_url ? (
                                 // eslint-disable-next-line @next/next/no-img-element
-                                <img src={p.id_photo_url} alt="Student ID" className="w-full h-full object-contain cursor-zoom-in" onClick={() => window.open(p.id_photo_url!)} />
+                                <img src={p.id_photo_url} alt="NIN Document" className="w-full h-full object-contain cursor-zoom-in" onClick={() => window.open(p.id_photo_url!)} />
                               ) : (
                                 <span className="text-[9px] text-subtle uppercase">NO_DOCUMENT_LOADED</span>
                               )}
