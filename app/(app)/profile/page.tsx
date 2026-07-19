@@ -11,6 +11,21 @@ import type { User } from '@supabase/supabase-js'
 import { useSpring, animated } from 'react-spring'
 import CheckoutModal from '@/components/listings/CheckoutModal'
 
+const NIGERIAN_BANKS = [
+  { code: '044', name: 'Access Bank' },
+  { code: '050', name: 'Sterling Bank' },
+  { code: '058', name: 'GTBank (Guaranty Trust Bank)' },
+  { code: '057', name: 'Zenith Bank' },
+  { code: '033', name: 'UBA (United Bank for Africa)' },
+  { code: '011', name: 'First Bank of Nigeria' },
+  { code: '035', name: 'Wema Bank' },
+  { code: '070', name: 'Fidelity Bank' },
+  { code: '219', name: 'Stanbic IBTC Bank' },
+  { code: '50515', name: 'Moniepoint MFB' },
+  { code: '999992', name: 'OPay' },
+  { code: '50211', name: 'Kuda Bank' }
+]
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Profile {
   user_id: string
@@ -27,6 +42,13 @@ interface Profile {
   subscription_status: 'trialing' | 'active' | 'paused' | null
   subscription_started_at: string | null
   next_billing_date: string | null
+  wallet_balance: number
+  virtual_account_number: string | null
+  virtual_bank_name: string | null
+  virtual_account_name: string | null
+  payout_bank_code: string | null
+  payout_account_number: string | null
+  payout_account_name: string | null
 }
 
 interface MyListing {
@@ -137,6 +159,11 @@ export default function ProfilePage() {
   const [feeModalOpen, setFeeModalOpen] = useState(false)
   const [selectedListingForFee, setSelectedListingForFee] = useState<MyListing | null>(null)
 
+  const [updatingPayout, setUpdatingPayout] = useState(false)
+  const [payoutBank, setPayoutBank] = useState('')
+  const [payoutAcc, setPayoutAcc] = useState('')
+  const [payoutError, setPayoutError] = useState<string | null>(null)
+
   const [subModalOpen, setSubModalOpen] = useState(false)
 
   // Simulation feedback
@@ -201,6 +228,35 @@ export default function ProfilePage() {
     fetchData()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const handleUpdatePayout = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!user) return
+    if (!payoutBank || payoutAcc.length !== 10) {
+      setPayoutError('Please select a bank and enter a 10-digit account number.')
+      return
+    }
+    setPayoutError(null)
+    try {
+      const bankName = NIGERIAN_BANKS.find(b => b.code === payoutBank)?.name || 'Unknown Bank'
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          payout_bank_code: payoutBank,
+          payout_account_number: payoutAcc,
+          payout_account_name: bankName,
+        })
+        .eq('user_id', user.id)
+
+      if (error) throw error
+      setUpdatingPayout(false)
+      setPayoutBank('')
+      setPayoutAcc('')
+      fetchData()
+    } catch (err: any) {
+      setPayoutError(err.message || 'Failed to update bank details.')
+    }
+  }
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -494,6 +550,96 @@ export default function ProfilePage() {
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+
+          {/* Monnify Wallet & Payout Settings */}
+          <div className="border border-border bg-surface-low/80 p-5 rounded-sm relative font-mono text-xs space-y-4 shadow-xl">
+            <div className="flex items-center justify-between border-b border-border/40 pb-2">
+              <span className="font-bold text-brand-indigo uppercase tracking-widest text-[9px]">MONNIFY_WALLET_LEDGER</span>
+              <span className="text-[8px] text-brand-mint uppercase font-bold">SECURED</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Wallet Balance and Virtual account info */}
+              <div className="space-y-3 bg-surface/50 border border-border/60 p-4 rounded-sm">
+                <div>
+                  <span className="text-[8px] font-bold text-subtle uppercase tracking-widest">Available Wallet Balance</span>
+                  <p className="text-2xl font-display font-black text-brand-mint mt-1">₦{profile?.wallet_balance?.toLocaleString() || '0.00'}</p>
+                </div>
+
+                <div className="border-t border-border/40 pt-2 space-y-1">
+                  <span className="text-[8px] font-bold text-subtle uppercase tracking-widest">Dedicated Funding Account</span>
+                  {profile?.virtual_account_number ? (
+                    <div className="text-[10px] text-primary leading-normal space-y-0.5">
+                      <div>Bank: <span className="font-bold text-white">{profile.virtual_bank_name}</span></div>
+                      <div>Acc No: <span className="font-bold text-white tracking-widest">{profile.virtual_account_number}</span></div>
+                      <div>Name: <span className="text-muted">{profile.virtual_account_name}</span></div>
+                    </div>
+                  ) : (
+                    <p className="text-[10px] text-subtle italic">Virtual funding account not active. Please complete onboarding verification.</p>
+                  )}
+                  <p className="text-[8px] text-subtle leading-normal mt-1">Transfer funds to this account number to credit your wallet balance for purchase escrows.</p>
+                </div>
+              </div>
+
+              {/* Personal Bank Payout details */}
+              <div className="space-y-3 bg-surface/50 border border-border/60 p-4 rounded-sm flex flex-col justify-between">
+                <div>
+                  <span className="text-[8px] font-bold text-subtle uppercase tracking-widest">Your Bank Payout Destination</span>
+                  {profile?.payout_account_number ? (
+                    <div className="text-[10px] text-primary mt-1 space-y-0.5">
+                      <div>Bank: <span className="font-bold text-white">{profile.payout_account_name}</span></div>
+                      <div>Acc No: <span className="font-bold text-white tracking-widest">{profile.payout_account_number}</span></div>
+                    </div>
+                  ) : (
+                    <p className="text-[10px] text-subtle italic mt-1">No payout account linked.</p>
+                  )}
+                  <p className="text-[8px] text-subtle leading-normal mt-1">This is where your marketplace earnings will be disbursed when escrow payments are released.</p>
+                </div>
+
+                <div>
+                  {updatingPayout ? (
+                    <form onSubmit={handleUpdatePayout} className="space-y-2 mt-2">
+                      {payoutError && (
+                        <p className="text-[8px] text-error font-bold uppercase">{payoutError}</p>
+                      )}
+                      <select
+                        className="w-full px-2 py-1 bg-canvas border border-border rounded text-[10px] text-primary outline-none focus:border-brand-indigo"
+                        value={payoutBank}
+                        onChange={(e) => setPayoutBank(e.target.value)}
+                      >
+                        <option value="">-- Select Bank --</option>
+                        {NIGERIAN_BANKS.map((b) => (
+                          <option key={b.code} value={b.code}>{b.name}</option>
+                        ))}
+                      </select>
+                      <input
+                        type="text"
+                        placeholder="10-digit Account Number"
+                        className="w-full px-2 py-1 bg-canvas border border-border rounded text-[10px] text-primary outline-none focus:border-brand-indigo font-mono"
+                        value={payoutAcc}
+                        onChange={(e) => setPayoutAcc(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                      />
+                      <div className="flex gap-2">
+                        <button type="submit" className="px-2 py-1 bg-brand-indigo text-white text-[8px] font-bold uppercase rounded hover:opacity-90">Save</button>
+                        <button type="button" onClick={() => setUpdatingPayout(false)} className="px-2 py-1 bg-surface border border-border text-subtle text-[8px] font-bold uppercase rounded">Cancel</button>
+                      </div>
+                    </form>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setPayoutBank(profile?.payout_bank_code || '')
+                        setPayoutAcc(profile?.payout_account_number || '')
+                        setUpdatingPayout(true)
+                      }}
+                      className="w-full py-1.5 border border-dashed border-border/80 text-[9px] font-bold uppercase tracking-wider hover:border-brand-indigo hover:text-brand-indigo transition-colors rounded-sm"
+                    >
+                      Update Payout Destination
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 

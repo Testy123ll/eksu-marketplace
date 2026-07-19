@@ -13,6 +13,21 @@ import { studentDetailsSchema, vendorOnboardingSchema, type StudentDetailsInput,
 import { motion, AnimatePresence } from 'motion/react'
 import confetti from 'canvas-confetti'
 
+const NIGERIAN_BANKS = [
+  { code: '044', name: 'Access Bank' },
+  { code: '050', name: 'Sterling Bank' },
+  { code: '058', name: 'GTBank (Guaranty Trust Bank)' },
+  { code: '057', name: 'Zenith Bank' },
+  { code: '033', name: 'UBA (United Bank for Africa)' },
+  { code: '011', name: 'First Bank of Nigeria' },
+  { code: '035', name: 'Wema Bank' },
+  { code: '070', name: 'Fidelity Bank' },
+  { code: '219', name: 'Stanbic IBTC Bank' },
+  { code: '50515', name: 'Moniepoint MFB' },
+  { code: '999992', name: 'OPay' },
+  { code: '50211', name: 'Kuda Bank' }
+]
+
 type OnboardingStep = 'fork' | 'student_details' | 'student_id' | 'student_selfie' | 'vendor_details'
 
 export default function VerifyPage() {
@@ -199,6 +214,9 @@ export default function VerifyPage() {
           selfie_url: selfieUrl,
           verification_status: 'pending',
           trust_score: 50,
+          payout_bank_code: studentForm.payoutBankCode,
+          payout_account_number: studentForm.payoutAccountNumber,
+          payout_account_name: NIGERIAN_BANKS.find(b => b.code === studentForm.payoutBankCode)?.name || 'Unknown Bank',
         })
         .eq('user_id', userId)
         .select()
@@ -206,6 +224,9 @@ export default function VerifyPage() {
 
       if (error) throw error
       setProfile(data)
+
+      // Trigger Monnify virtual account generation in the background
+      await fetch('/api/verify/generate-account', { method: 'POST' })
     } catch (err: any) {
       alert(err.message || 'Verification submission failed.')
     } finally {
@@ -213,7 +234,7 @@ export default function VerifyPage() {
     }
   }
 
-  const handleVendorSubmit = async (data: VendorOnboardingInput) => {
+  const handleVendorSubmit = async (data: any) => {
     if (!userId) return
     if (!shopfrontFile) {
       setVendorError('Verification photo is required.')
@@ -244,6 +265,9 @@ export default function VerifyPage() {
           referral_vendor_code: referralCode.trim() || null,
           verification_status: 'pending',
           trust_score: 50,
+          payout_bank_code: data.payoutBankCode,
+          payout_account_number: data.payoutAccountNumber,
+          payout_account_name: NIGERIAN_BANKS.find(b => b.code === data.payoutBankCode)?.name || 'Unknown Bank',
         })
         .eq('user_id', userId)
         .select()
@@ -251,6 +275,9 @@ export default function VerifyPage() {
 
       if (error) throw error
       setProfile(profileData)
+
+      // Trigger Monnify virtual account generation in the background
+      await fetch('/api/verify/generate-account', { method: 'POST' })
     } catch (err: any) {
       setVendorError(err.message || 'Onboarding submission failed.')
     } finally {
@@ -549,6 +576,31 @@ export default function VerifyPage() {
                     {...studentFormMethods.register('phoneNumber')}
                   />
 
+                  <div className="space-y-1">
+                    <label className="block text-xs font-semibold text-muted uppercase tracking-wider">Payout Bank</label>
+                    <select
+                      className="w-full px-3 py-2 bg-canvas border border-border/80 rounded-lg text-xs font-sans text-primary hover:border-brand-indigo/40 focus:border-brand-indigo outline-none transition-colors"
+                      {...studentFormMethods.register('payoutBankCode')}
+                    >
+                      <option value="">-- Select Bank --</option>
+                      {NIGERIAN_BANKS.map((bank) => (
+                        <option key={bank.code} value={bank.code}>
+                          {bank.name}
+                        </option>
+                      ))}
+                    </select>
+                    {studentFormMethods.formState.errors.payoutBankCode?.message && (
+                      <p className="text-[10px] text-error font-medium">{studentFormMethods.formState.errors.payoutBankCode.message}</p>
+                    )}
+                  </div>
+
+                  <Input
+                    label="Payout Account Number"
+                    placeholder="10-digit Nigerian bank account number"
+                    error={studentFormMethods.formState.errors.payoutAccountNumber?.message}
+                    {...studentFormMethods.register('payoutAccountNumber')}
+                  />
+
                   <div className="flex gap-3 pt-4">
                     <Button type="button" variant="secondary" className="flex-1 rounded-xl text-xs h-11" onClick={() => setStep('fork')}>
                       Back
@@ -740,6 +792,31 @@ export default function VerifyPage() {
                     placeholder="e.g. Beside EKSU main gate, Ado-Ekiti"
                     error={vendorFormMethods.formState.errors.businessAddress?.message}
                     {...vendorFormMethods.register('businessAddress')}
+                  />
+
+                  <div className="space-y-1">
+                    <label className="block text-xs font-semibold text-muted uppercase tracking-wider">Payout Bank</label>
+                    <select
+                      className="w-full px-3 py-2 bg-canvas border border-border/80 rounded-lg text-xs font-sans text-primary hover:border-brand-mint/40 focus:border-brand-mint outline-none transition-colors"
+                      {...vendorFormMethods.register('payoutBankCode')}
+                    >
+                      <option value="">-- Select Bank --</option>
+                      {NIGERIAN_BANKS.map((bank) => (
+                        <option key={bank.code} value={bank.code}>
+                          {bank.name}
+                        </option>
+                      ))}
+                    </select>
+                    {vendorFormMethods.formState.errors.payoutBankCode?.message && (
+                      <p className="text-[10px] text-error font-medium">{vendorFormMethods.formState.errors.payoutBankCode.message}</p>
+                    )}
+                  </div>
+
+                  <Input
+                    label="Payout Account Number"
+                    placeholder="10-digit Nigerian bank account number"
+                    error={vendorFormMethods.formState.errors.payoutAccountNumber?.message}
+                    {...vendorFormMethods.register('payoutAccountNumber')}
                   />
 
                   {/* Business Type Selector */}

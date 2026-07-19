@@ -77,6 +77,12 @@ function ChatContent() {
 
   // Escrow state
   const [escrowTx, setEscrowTx] = useState<EscrowTransaction | null>(null)
+  const [currentUserWallet, setCurrentUserWallet] = useState<{
+    wallet_balance: number
+    virtual_account_number: string | null
+    virtual_bank_name: string | null
+    virtual_account_name: string | null
+  } | null>(null)
   const [listingDetails, setListingDetails] = useState<{ price: number; seller_id: string; title: string } | null>(null)
   const [otpInput, setOtpInput] = useState('')
   const [otpError, setOtpError] = useState<string | null>(null)
@@ -129,10 +135,22 @@ function ChatContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, currentUserId, threads])
 
+  const loadUserWallet = async (uid: string) => {
+    const { data } = await supabase
+      .from('profiles')
+      .select('wallet_balance, virtual_account_number, virtual_bank_name, virtual_account_name')
+      .eq('user_id', uid)
+      .single()
+    if (data) {
+      setCurrentUserWallet(data)
+    }
+  }
+
   const initChat = async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/login'); return }
     setCurrentUserId(user.id)
+    loadUserWallet(user.id)
     await loadThreads(user.id)
   }
 
@@ -418,8 +436,6 @@ function ChatContent() {
     if (!activeThread || !currentUserId || !listingDetails) return
     setActionLoading('initiate')
     try {
-      const code = Math.floor(1000 + Math.random() * 9000).toString()
-      
       // Look for the latest accepted offer
       const acceptedOffer = messages.slice().reverse().find(
         (m) => m.offer_amount != null && m.offer_status === 'accepted'
@@ -433,8 +449,7 @@ function ChatContent() {
           buyer_id: currentUserId,
           seller_id: listingDetails.seller_id,
           amount: amountToLock,
-          status: 'locked',
-          verification_code: code,
+          status: 'pending_payment',
         })
         .select('*')
         .single()
@@ -445,13 +460,85 @@ function ChatContent() {
         sender_id: currentUserId,
         recipient_id: activeThread.other_user_id,
         listing_id: activeThread.listing_id,
-        body: 'System: P2P Swap initiated. Meetup verification code generated securely.',
+        body: `System: Escrow transaction initiated for ₦${amountToLock.toLocaleString()}. Secure payment is pending.`,
       })
 
       setEscrowTx(data)
+      loadUserWallet(currentUserId)
       loadThreads(currentUserId)
     } catch (e: any) {
       alert(e.message || 'Failed to initiate meetup.')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const handlePayFromWallet = async () => {
+    if (!escrowTx || !currentUserId || !activeThread) return
+    setActionLoading('pay')
+    try {
+      // 1. Fetch current profile balance
+      const { data: profile, error: profileErr } = await supabase
+        .from('profiles')
+        .select('wallet_balance')
+        .eq('user_id', currentUserId)
+        .single()
+
+      if (profileErr || !profile) throw new Error('Could not fetch wallet balance')
+
+      const amountToLock = Number(escrowTx.amount)
+      if (Number(profile.wallet_balance) < amountToLock) {
+        alert('Insufficient wallet balance. Please transfer funds to your dedicated bank account.')
+        return
+      }
+
+      const postBalance = Number(profile.wallet_balance) - amountToLock
+      const code = Math.floor(1000 + Math.random() * 9000).toString()
+
+      // 2. Deduct balance
+      const { error: balanceErr } = await supabase
+        .from('profiles')
+        .update({ wallet_balance: postBalance })
+        .eq('user_id', currentUserId)
+
+      if (balanceErr) throw balanceErr
+
+      // 3. Log escrow lock in ledger
+      await supabase
+        .from('wallet_transactions')
+        .insert({
+          user_id: currentUserId,
+          amount: -amountToLock,
+          type: 'escrow_lock',
+          reference: `lock_${escrowTx.id.slice(0, 8)}`
+        })
+
+      // 4. Update Escrow status and code
+      const { data: updatedTx, error: escrowErr } = await supabase
+        .from('escrow_transactions')
+        .update({
+          status: 'locked',
+          verification_code: code
+        })
+        .eq('id', escrowTx.id)
+        .select('*')
+        .single()
+
+      if (escrowErr) throw escrowErr
+      setEscrowTx(updatedTx)
+
+      // 5. Post system message
+      await supabase.from('messages').insert({
+        sender_id: currentUserId,
+        recipient_id: activeThread.other_user_id,
+        listing_id: activeThread.listing_id,
+        body: `System: Payment of ₦${amountToLock.toLocaleString()} has been secured in escrow. Safe-Swap OTP code is: ${code}. Verify the item physically at a Safe-Swap zone before exchanging code.`,
+      })
+
+      loadUserWallet(currentUserId)
+      loadThreads(currentUserId)
+    } catch (e: any) {
+      alert(e.message || 'Failed to complete wallet payment')
     } finally {
       setActionLoading(null)
     }
@@ -480,6 +567,13 @@ function ChatContent() {
         recipient_id: activeThread.other_user_id,
         listing_id: activeThread.listing_id,
         body: 'System: Meetup verification code matched. P2P Swap completed successfully.',
+      })
+
+      // Trigger Monnify disbursement payout to the seller's account
+      await fetch('/api/escrow/payout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transactionId: escrowTx.id })
       })
 
       await checkEscrowStatus(activeThread, currentUserId)
@@ -891,6 +985,64 @@ function ChatContent() {
                           </button>
                         ) : (
                           <span className="text-[9px] text-muted italic uppercase tracking-wider">Waiting for buyer to initiate meetup...</span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* CASE 1.5: Pending Payment */}
+                    {escrowTx && escrowTx.status === 'pending_payment' && (
+                      <div className="space-y-3 pt-1">
+                        {currentUserId === escrowTx.buyer_id ? (
+                          // Buyer View
+                          <div className="space-y-3">
+                            <p className="text-[10px] text-subtle leading-relaxed">
+                              Escrow transaction is initiated. Please fund the escrow to secure the swap and generate the handoff verification code.
+                            </p>
+                            
+                            <div className="p-3 bg-surface border border-border/80 rounded-xl space-y-2">
+                              <div className="flex justify-between items-center text-[10px]">
+                                <span>Item Amount:</span>
+                                <span className="font-bold text-white">₦{escrowTx.amount.toLocaleString()}</span>
+                              </div>
+                              <div className="flex justify-between items-center text-[10px] border-t border-border/20 pt-1">
+                                <span>Wallet Balance:</span>
+                                <span className="font-bold text-brand-mint">₦{(currentUserWallet?.wallet_balance ?? 0).toLocaleString()}</span>
+                              </div>
+                            </div>
+
+                            {currentUserWallet && currentUserWallet.wallet_balance >= escrowTx.amount ? (
+                              <button
+                                onClick={handlePayFromWallet}
+                                disabled={actionLoading === 'pay'}
+                                className="w-full px-4 py-2 bg-brand-mint text-canvas font-bold hover:brightness-110 rounded-xl active:scale-95 transition-all uppercase text-[9px] tracking-wider cursor-pointer"
+                              >
+                                {actionLoading === 'pay' ? 'Locking Escrow...' : 'Pay from Wallet Balance'}
+                              </button>
+                            ) : (
+                              <div className="space-y-2 pt-1">
+                                <p className="text-[9px] font-bold text-brand-amber uppercase tracking-wider">Insufficient Balance - Fund via Bank Transfer:</p>
+                                {currentUserWallet?.virtual_account_number ? (
+                                  <div className="p-3 bg-surface border border-border rounded-xl text-[10px] space-y-1 text-primary leading-normal">
+                                    <div>Bank: <span className="font-bold text-white">{currentUserWallet.virtual_bank_name}</span></div>
+                                    <div>Acc No: <span className="font-bold text-white tracking-widest select-all">{currentUserWallet.virtual_account_number}</span></div>
+                                    <div>Name: <span className="text-muted">{currentUserWallet.virtual_account_name}</span></div>
+                                  </div>
+                                ) : (
+                                  <p className="text-[9px] text-subtle italic">Please complete account verification/onboarding to generate dedicated funding details.</p>
+                                )}
+                                <p className="text-[8px] text-subtle leading-normal">Transfer exactly ₦{escrowTx.amount.toLocaleString()} to your dedicated account. Payment will lock automatically upon receipt.</p>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          // Seller View
+                          <div className="space-y-2">
+                            <p className="text-brand-amber font-bold uppercase text-[9px] tracking-wider">Awaiting Secure Escrow Payment</p>
+                            <p className="text-[10px] text-subtle leading-relaxed">
+                              You have initiated the meetup. The buyer has been prompted to deposit ₦{escrowTx.amount.toLocaleString()} into the secure escrow wallet.
+                            </p>
+                            <p className="text-[9px] text-muted italic">Do not hand over the item until status changes to LOCKED.</p>
+                          </div>
                         )}
                       </div>
                     )}
