@@ -17,8 +17,8 @@ const NAV_ITEMS = [
     href: '/listings/new',
     label: 'Sell',
     icon: (_active: boolean) => (
-      <div className="w-10 h-10 -mt-5 rounded-full bg-gradient-to-br from-brand-indigo to-brand-mint flex items-center justify-center shadow-[0_0_20px_rgba(91,77,255,0.5)] border-2 border-canvas">
-        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="w-11 h-11 -mt-5 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.5)] border-2 border-canvas text-slate-950">
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
         </svg>
       </div>
@@ -26,7 +26,7 @@ const NAV_ITEMS = [
   },
   {
     href: '/chat',
-    label: 'Chat',
+    label: 'Messages',
     icon: (active: boolean) => (
       <svg className="w-5 h-5" fill={active ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={active ? 0 : 2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -35,7 +35,7 @@ const NAV_ITEMS = [
   },
   {
     href: '/profile',
-    label: 'Profile',
+    label: 'Account',
     icon: (active: boolean) => (
       <svg className="w-5 h-5" fill={active ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={active ? 0 : 2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -48,7 +48,7 @@ export default function MobileBottomNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/[0.06] px-2 pb-safe">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 glass border-t border-white/10 px-2 pb-safe">
       <div className="flex items-end justify-around h-16">
         {NAV_ITEMS.map((item) => {
           const isActive =
@@ -64,7 +64,7 @@ export default function MobileBottomNav() {
                 className="flex flex-col items-center justify-end pb-2 gap-0.5 flex-1"
               >
                 {item.icon(isActive)}
-                <span className="text-[9px] font-semibold text-muted mt-1">Sell</span>
+                <span className="text-[10px] font-bold text-emerald-400 mt-1">Sell</span>
               </Link>
             )
           }
@@ -74,16 +74,13 @@ export default function MobileBottomNav() {
               key={item.href}
               href={item.href}
               className={`flex flex-col items-center justify-center pb-2 gap-1 flex-1 transition-colors duration-200 ${
-                isActive ? 'text-brand-mint' : 'text-muted hover:text-primary'
+                isActive ? 'text-emerald-400 font-bold' : 'text-muted hover:text-white'
               }`}
             >
               {item.icon(isActive)}
-              <span className={`text-[9px] font-semibold tracking-wide ${isActive ? 'text-brand-mint' : ''}`}>
+              <span className="text-[10px] font-medium tracking-wide">
                 {item.label}
               </span>
-              {isActive && (
-                <span className="absolute bottom-1 w-1 h-1 rounded-full bg-brand-mint shadow-[0_0_4px_rgba(0,229,155,0.8)]" />
-              )}
             </Link>
           )
         })}

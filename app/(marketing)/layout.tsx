@@ -8,43 +8,50 @@ export default function MarketingLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen flex flex-col bg-canvas text-primary relative">
-      {/* Header */}
-      <header className="sticky top-0 z-50 glass border-b border-white/[0.06] px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen flex flex-col bg-canvas text-primary relative font-sans">
+      {/* Header Navigation */}
+      <header className="sticky top-0 z-50 glass border-b border-white/10 px-4 sm:px-8 py-3.5 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="font-display font-extrabold text-lg sm:text-xl tracking-tight gradient-brand-text">
-            BataMarket
+          <span className="font-display font-extrabold text-xl tracking-tight text-white">
+            Bata<span className="text-emerald-400">Market</span>
           </span>
-          <span className="h-1.5 w-1.5 rounded-full bg-brand-mint animate-pulse shadow-[0_0_8px_rgba(0,229,155,0.8)]" />
         </Link>
 
-        <nav className="hidden sm:flex items-center gap-1 text-sm font-medium">
+        {/* Desktop Nav links */}
+        <nav className="hidden md:flex items-center gap-1 text-xs font-semibold text-muted">
           <Link
-            href="#features"
-            className="px-4 py-2 rounded-md text-muted hover:text-primary hover:bg-surface-high transition-all duration-200"
+            href="/"
+            className="px-4 py-2 rounded-full hover:text-white hover:bg-surface-high/60 transition-all"
           >
-            Features
+            Home
           </Link>
           <Link
-            href="#safety"
-            className="px-4 py-2 rounded-md text-muted hover:text-primary hover:bg-surface-high transition-all duration-200"
+            href="/#categories"
+            className="px-4 py-2 rounded-full hover:text-white hover:bg-surface-high/60 transition-all"
           >
-            Safety
+            Categories
           </Link>
           <Link
-            href="#help"
-            className="px-4 py-2 rounded-md text-muted hover:text-primary hover:bg-surface-high transition-all duration-200"
+            href="/listings"
+            className="px-4 py-2 rounded-full hover:text-white hover:bg-surface-high/60 transition-all"
           >
-            Help Center
+            Browse Ads
+          </Link>
+          <Link
+            href="/verify"
+            className="px-4 py-2 rounded-full hover:text-white hover:bg-surface-high/60 transition-all"
+          >
+            NIN Verification
           </Link>
         </nav>
 
-        <div className="flex items-center gap-3">
+        {/* Action Buttons */}
+        <div className="flex items-center gap-2.5">
           <Link href="/login">
-            <Button variant="ghost" className="text-sm">Sign In</Button>
+            <Button variant="ghost" className="px-4 py-2 text-xs font-semibold">Sign In</Button>
           </Link>
           <Link href="/register">
-            <Button variant="primary" className="text-sm">Get Started</Button>
+            <Button variant="primary" className="px-5 py-2 text-xs font-bold shadow-[0_0_20px_rgba(16,185,129,0.3)]">Post Your Ad</Button>
           </Link>
         </div>
       </header>
@@ -53,15 +60,20 @@ export default function MarketingLayout({
       <main className="flex-1 flex flex-col">{children}</main>
 
       {/* Footer */}
-      <footer className="border-t border-white/[0.06] bg-surface-lowest py-8 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-display font-bold gradient-brand-text">BataMarket</span>
-            <span className="text-subtle text-xs">© {new Date().getFullYear()} Built by Bluestark.</span>
+      <footer className="border-t border-white/10 bg-surface-lowest/90 py-10 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+            <span className="font-display font-extrabold text-base text-white">
+              Bata<span className="text-emerald-400">Market</span>
+            </span>
+            <span className="text-muted text-xs">
+              © {new Date().getFullYear()} BataMarket. Student-focused, Campus-first.
+            </span>
           </div>
-          <div className="flex gap-6 text-xs text-subtle">
-            <Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
-            <Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+          <div className="flex flex-wrap justify-center gap-6 text-xs text-muted font-medium">
+            <Link href="/listings" className="hover:text-white transition-colors">Listings</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
           </div>
         </div>
       </footer>

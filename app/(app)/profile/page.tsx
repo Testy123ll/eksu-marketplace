@@ -496,53 +496,53 @@ export default function ProfilePage() {
           transition={{ delay: 0.1 }}
           className="lg:col-span-2 space-y-6"
         >
-          {/* Billing & Profile details: Dense tabular layout */}
-          <div className="glass rounded-2xl p-6 font-mono text-xs space-y-4 shadow-xl">
+          {/* Billing & Profile details */}
+          <div className="glass rounded-2xl p-6 text-xs space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <span className="font-bold text-emerald-400 uppercase tracking-widest text-[10px]">SYS_REGISTRY_LEDGER_V2.0</span>
-              <span className="text-[9px] text-muted uppercase font-semibold">VERIFIED</span>
+              <span className="font-bold text-emerald-400 text-xs">Account Information</span>
+              <span className="text-[10px] text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">VERIFIED STUDENT</span>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-white/10 text-subtle text-[9px] uppercase tracking-wider">
-                    <th className="py-2 pr-4 font-bold">Registry Key</th>
-                    <th className="py-2 font-bold">Registered Value</th>
+                  <tr className="border-b border-white/10 text-subtle text-[10px] uppercase tracking-wider">
+                    <th className="py-2 pr-4 font-semibold">Account Detail</th>
+                    <th className="py-2 font-semibold">Information</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5 text-muted">
                   <tr>
-                    <td className="py-2.5 pr-4 text-[10px] uppercase font-bold text-subtle">ACCOUNT_NAME</td>
+                    <td className="py-2.5 pr-4 text-xs font-medium text-subtle">Full Name</td>
                     <td className="py-2.5 text-primary font-medium">{profile?.full_name || profile?.business_name || '—'}</td>
                   </tr>
                   <tr>
-                    <td className="py-2.5 pr-4 text-[10px] uppercase font-bold text-subtle">ACADEMIC_DEPT</td>
-                    <td className="py-2.5 text-primary font-medium">{profile?.department || 'N/A (NON-STUDENT)'}</td>
+                    <td className="py-2.5 pr-4 text-xs font-medium text-subtle">Department</td>
+                    <td className="py-2.5 text-primary font-medium">{profile?.department || 'N/A'}</td>
                   </tr>
                   <tr>
-                    <td className="py-2.5 pr-4 text-[10px] uppercase font-bold text-subtle">ACADEMIC_LEVEL</td>
-                    <td className="py-2.5 text-primary font-medium">{profile?.level ? `${profile.level}L` : 'N/A (NON-STUDENT)'}</td>
+                    <td className="py-2.5 pr-4 text-xs font-medium text-subtle">Level</td>
+                    <td className="py-2.5 text-primary font-medium">{profile?.level ? `${profile.level} Level` : 'N/A'}</td>
                   </tr>
                   <tr>
-                    <td className="py-2.5 pr-4 text-[10px] uppercase font-bold text-subtle">SECURE_PHONE</td>
+                    <td className="py-2.5 pr-4 text-xs font-medium text-subtle">Phone Number</td>
                     <td className="py-2.5 text-primary font-medium">{profile?.phone_number || '—'}</td>
                   </tr>
                   {isStudent && (
                     <tr>
-                      <td className="py-2.5 pr-4 text-[10px] uppercase font-bold text-subtle">FREE_ALLOWANCE_COUNTER</td>
-                      <td className="py-2.5 text-primary font-medium">{profile?.listings_used_free ?? 0} / 3 listings utilized</td>
+                      <td className="py-2.5 pr-4 text-xs font-medium text-subtle">Listing Allowance</td>
+                      <td className="py-2.5 text-primary font-medium">{profile?.listings_used_free ?? 0} / 3 free listings used</td>
                     </tr>
                   )}
                   {isVendor && (
                     <>
                       <tr>
-                        <td className="py-2.5 pr-4 text-[10px] uppercase font-bold text-subtle">SUBCRIPTION_STATUS</td>
-                        <td className="py-2.5 text-primary font-medium uppercase">{profile?.subscription_status || 'inactive'}</td>
+                        <td className="py-2.5 pr-4 text-xs font-medium text-subtle">Subscription Status</td>
+                        <td className="py-2.5 text-primary font-medium capitalize">{profile?.subscription_status || 'inactive'}</td>
                       </tr>
                       {profile?.next_billing_date && (
                         <tr>
-                          <td className="py-2.5 pr-4 text-[10px] uppercase font-bold text-subtle">NEXT_BILLING_CYCLE</td>
+                          <td className="py-2.5 pr-4 text-xs font-medium text-subtle">Next Billing Date</td>
                           <td className="py-2.5 text-primary font-medium">{new Date(profile.next_billing_date).toLocaleDateString()}</td>
                         </tr>
                       )}
@@ -554,58 +554,58 @@ export default function ProfilePage() {
           </div>
 
           {/* Monnify Wallet & Payout Settings */}
-          <div className="glass rounded-2xl p-6 font-mono text-xs space-y-4 shadow-xl">
+          <div className="glass rounded-2xl p-6 text-xs space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <span className="font-bold text-emerald-400 uppercase tracking-widest text-[10px]">MONNIFY_WALLET_LEDGER</span>
-              <span className="text-[9px] text-emerald-400 uppercase font-bold">SECURED</span>
+              <span className="font-bold text-emerald-400 text-xs">Wallet &amp; Payout Settings</span>
+              <span className="text-[10px] text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">ACTIVE</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Wallet Balance and Virtual account info */}
               <div className="space-y-3 bg-surface-low/60 border border-white/10 p-4 rounded-xl">
                 <div>
-                  <span className="text-[9px] font-bold text-subtle uppercase tracking-widest">Available Wallet Balance</span>
+                  <span className="text-[10px] font-semibold text-subtle">Available Wallet Balance</span>
                   <p className="text-2xl font-display font-black text-emerald-400 mt-1">₦{profile?.wallet_balance?.toLocaleString() || '0.00'}</p>
                 </div>
 
-                <div className="border-t border-white/10 pt-2 space-y-1">
-                  <span className="text-[9px] font-bold text-subtle uppercase tracking-widest">Dedicated Funding Account</span>
+                <div className="border-t border-white/10 pt-2.5 space-y-1">
+                  <span className="text-[10px] font-semibold text-subtle">Dedicated Funding Account</span>
                   {profile?.virtual_account_number ? (
-                    <div className="text-[10px] text-primary leading-normal space-y-0.5">
+                    <div className="text-xs text-primary leading-normal space-y-0.5">
                       <div>Bank: <span className="font-bold text-white">{profile.virtual_bank_name}</span></div>
                       <div>Acc No: <span className="font-bold text-white tracking-widest">{profile.virtual_account_number}</span></div>
                       <div>Name: <span className="text-muted">{profile.virtual_account_name}</span></div>
                     </div>
                   ) : (
-                    <p className="text-[10px] text-subtle italic">Virtual funding account not active. Please complete onboarding verification.</p>
+                    <p className="text-xs text-subtle italic">Virtual account creating... Complete verification to view details.</p>
                   )}
-                  <p className="text-[9px] text-subtle leading-normal mt-1">Transfer funds to this account number to credit your wallet balance for purchase escrows.</p>
+                  <p className="text-[10px] text-subtle leading-normal mt-1">Transfer funds to this account number to credit your wallet balance for purchase escrows.</p>
                 </div>
               </div>
 
               {/* Personal Bank Payout details */}
               <div className="space-y-3 bg-surface-low/60 border border-white/10 p-4 rounded-xl flex flex-col justify-between">
                 <div>
-                  <span className="text-[8px] font-bold text-subtle uppercase tracking-widest">Your Bank Payout Destination</span>
+                  <span className="text-[10px] font-semibold text-subtle">Your Bank Payout Destination</span>
                   {profile?.payout_account_number ? (
-                    <div className="text-[10px] text-primary mt-1 space-y-0.5">
+                    <div className="text-xs text-primary mt-1 space-y-0.5">
                       <div>Bank: <span className="font-bold text-white">{profile.payout_account_name}</span></div>
                       <div>Acc No: <span className="font-bold text-white tracking-widest">{profile.payout_account_number}</span></div>
                     </div>
                   ) : (
-                    <p className="text-[10px] text-subtle italic mt-1">No payout account linked.</p>
+                    <p className="text-xs text-subtle italic mt-1">No payout account linked.</p>
                   )}
-                  <p className="text-[8px] text-subtle leading-normal mt-1">This is where your marketplace earnings will be disbursed when escrow payments are released.</p>
+                  <p className="text-[10px] text-subtle leading-normal mt-1">This is where your marketplace earnings will be disbursed when escrow payments are released.</p>
                 </div>
 
                 <div>
                   {updatingPayout ? (
                     <form onSubmit={handleUpdatePayout} className="space-y-2 mt-2">
                       {payoutError && (
-                        <p className="text-[8px] text-error font-bold uppercase">{payoutError}</p>
+                        <p className="text-[10px] text-error font-bold">{payoutError}</p>
                       )}
                       <select
-                        className="w-full px-2 py-1 bg-canvas border border-border rounded text-[10px] text-primary outline-none focus:border-brand-indigo"
+                        className="w-full px-3 py-1.5 bg-canvas border border-white/10 rounded-xl text-xs text-primary outline-none focus:border-emerald-400"
                         value={payoutBank}
                         onChange={(e) => setPayoutBank(e.target.value)}
                       >
@@ -617,13 +617,13 @@ export default function ProfilePage() {
                       <input
                         type="text"
                         placeholder="10-digit Account Number"
-                        className="w-full px-2 py-1 bg-canvas border border-border rounded text-[10px] text-primary outline-none focus:border-brand-indigo font-mono"
+                        className="w-full px-3 py-1.5 bg-canvas border border-white/10 rounded-xl text-xs text-primary outline-none focus:border-emerald-400"
                         value={payoutAcc}
                         onChange={(e) => setPayoutAcc(e.target.value.replace(/\D/g, '').slice(0, 10))}
                       />
-                      <div className="flex gap-2">
-                        <button type="submit" className="px-2 py-1 bg-brand-indigo text-white text-[8px] font-bold uppercase rounded hover:opacity-90">Save</button>
-                        <button type="button" onClick={() => setUpdatingPayout(false)} className="px-2 py-1 bg-surface border border-border text-subtle text-[8px] font-bold uppercase rounded">Cancel</button>
+                      <div className="flex gap-2 pt-1">
+                        <button type="submit" className="px-3 py-1.5 bg-emerald-500 text-slate-950 text-xs font-bold rounded-full hover:brightness-110">Save</button>
+                        <button type="button" onClick={() => setUpdatingPayout(false)} className="px-3 py-1.5 bg-surface border border-white/10 text-subtle text-xs font-medium rounded-full">Cancel</button>
                       </div>
                     </form>
                   ) : (
@@ -633,7 +633,7 @@ export default function ProfilePage() {
                         setPayoutAcc(profile?.payout_account_number || '')
                         setUpdatingPayout(true)
                       }}
-                      className="w-full py-1.5 border border-dashed border-border/80 text-[9px] font-bold uppercase tracking-wider hover:border-brand-indigo hover:text-brand-indigo transition-colors rounded-sm"
+                      className="w-full py-2 border border-dashed border-white/20 text-xs font-semibold hover:border-emerald-400 hover:text-emerald-400 transition-colors rounded-full"
                     >
                       Update Payout Destination
                     </button>
@@ -643,11 +643,11 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Escrow Transactions Ledger Table */}
-          <div className="border border-border bg-surface-low/80 p-5 rounded-sm relative font-mono text-xs space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-border/40 pb-2">
-              <span className="font-bold text-brand-indigo uppercase tracking-widest text-[9px]">ESCROW_AUDIT_TRANSACTIONS_LOG</span>
-              <span className="text-[8px] text-brand-mint uppercase font-bold">REALTIME_SYNC</span>
+          {/* Escrow Transactions Log */}
+          <div className="glass rounded-2xl p-6 text-xs space-y-4 shadow-xl">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <span className="font-bold text-emerald-400 text-xs">Escrow Swap Transactions</span>
+              <span className="text-[10px] text-muted font-medium">REALTIME SYNC</span>
             </div>
 
             {escrowTransactions.length === 0 ? (
@@ -655,7 +655,7 @@ export default function ProfilePage() {
                 <svg className="w-8 h-8 text-subtle/50 mx-auto" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
-                <p className="text-[10px] uppercase tracking-wider">No active escrow records discovered in registry.</p>
+                <p className="text-xs">No active escrow records discovered in registry.</p>
               </div>
             ) : (
               <div className="overflow-x-auto scrollbar-none">
