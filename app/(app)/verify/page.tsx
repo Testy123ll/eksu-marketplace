@@ -341,56 +341,36 @@ export default function VerifyPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="max-w-md w-full"
           >
-            {/* Clinical registry log style for pending status */}
-            <div className="border-2 border-border bg-surface-low p-6 font-mono text-xs text-primary rounded-sm relative overflow-hidden shadow-2xl">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-indigo to-brand-mint animate-pulse" />
-              
-              <div className="flex justify-between items-center border-b border-border/40 pb-4 mb-4">
-                <span className="font-bold text-brand-indigo uppercase tracking-widest text-[10px]">REGISTRY: PENDING_REVIEW</span>
-                <span className="text-[9px] uppercase font-bold text-subtle px-1.5 py-0.5 border border-border rounded-sm bg-surface">
-                  ID: {profile.user_id.slice(0, 8).toUpperCase()}
+            {/* Clean consumer pending status card */}
+            <div className="glass rounded-3xl p-8 text-xs text-primary relative overflow-hidden shadow-2xl space-y-6">
+              <div className="flex justify-between items-center border-b border-white/10 pb-4">
+                <span className="font-bold text-emerald-400 text-sm">Verification Submitted</span>
+                <span className="text-[10px] font-semibold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+                  UNDER REVIEW
                 </span>
               </div>
 
-              <div className="flex items-center gap-3 bg-surface border border-border/60 p-4 rounded-sm mb-4">
-                <div className="w-10 h-10 rounded-full bg-brand-indigo/10 flex items-center justify-center text-brand-indigo shrink-0">
-                  <svg className="w-5 h-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <div className="flex items-center gap-4 glass p-4 rounded-2xl border border-white/10">
+                <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                  <svg className="w-6 h-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <div>
-                  <p className="font-bold uppercase tracking-wider text-primary">Onboarding Submitted</p>
-                  <p className="text-[10px] text-subtle mt-0.5 uppercase tracking-wide">Queue Position: Awaiting Moderator Review</p>
+                  <p className="font-bold text-sm text-primary">Onboarding Details Received</p>
+                  <p className="text-xs text-muted mt-0.5">Awaiting Moderator Approval</p>
                 </div>
               </div>
 
-              <p className="text-subtle leading-relaxed mb-4">
-                Thank you for submitting your verification details. Isaac (campus moderator) is currently reviewing submissions manually. This ensures a safe, scam-free swap marketplace for the entire EKSU student community.
+              <p className="text-muted leading-relaxed">
+                Thank you for submitting your verification details. Campus moderators review submissions to ensure a safe, scam-free marketplace for all EKSU students.
               </p>
-              
-              <div className="border border-border/60 bg-surface rounded-sm p-4 text-left space-y-3 mb-6">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-brand-indigo">Active Sandbox Permissions:</span>
-                <ul className="text-[10px] text-muted space-y-2 list-none font-mono">
-                  <li className="flex items-start gap-2">
-                    <span className="text-brand-mint">✓</span>
-                    <span>BROWSE_AND_SEARCH_ACTIVE</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-brand-mint">✓</span>
-                    <span>SECURE_ESCROW_TRADING_ENABLED</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-error">
-                    <span>✗</span>
-                    <span>CREATE_LISTINGS_SUSPENDED (PENDING_APPROVAL)</span>
-                  </li>
-                </ul>
-              </div>
 
-              <div className="flex flex-col gap-3">
-                <Button variant="primary" className="w-full rounded-sm font-mono text-[10px] uppercase tracking-wider h-11" onClick={() => router.push('/listings')}>
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <Button variant="primary" className="w-full h-11 text-xs font-bold" onClick={() => router.push('/listings')}>
                   Explore Listings
                 </Button>
-                <Button variant="secondary" className="w-full rounded-sm font-mono text-[10px] uppercase tracking-wider h-11" onClick={handleReset}>
+                <Button variant="secondary" className="w-full h-11 text-xs font-bold" onClick={handleReset}>
                   Resubmit Onboarding
                 </Button>
               </div>

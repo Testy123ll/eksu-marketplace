@@ -749,22 +749,22 @@ function ChatContent() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[calc(100vh-220px)] min-h-[500px]">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[calc(100vh-200px)] min-h-[500px]">
         {/* ── Thread list ── */}
-        <div className="lg:col-span-1 overflow-y-auto scrollbar-none space-y-2 pr-1">
+        <div className={`lg:col-span-1 overflow-y-auto scrollbar-none space-y-2 pr-1 ${activeThread ? 'hidden lg:block' : 'block'}`}>
           {loadingThreads ? (
             Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-20 rounded-xl bg-surface-low border border-border/40 animate-pulse" />
+              <div key={i} className="h-20 rounded-2xl glass border border-white/10 animate-pulse" />
             ))
           ) : threads.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-48 text-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-surface-low border border-border/80 flex items-center justify-center text-muted shadow-inner">
+              <div className="w-12 h-12 rounded-full glass border border-white/10 flex items-center justify-center text-muted shadow-inner">
                 <svg className="w-6 h-6 text-subtle" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
               <p className="text-sm text-muted">No conversations yet.</p>
-              <Link href="/listings" className="text-xs font-mono font-bold text-brand-indigo hover:underline uppercase">
+              <Link href="/listings" className="text-xs font-bold text-emerald-400 hover:underline uppercase">
                 Browse listings to start one
               </Link>
             </div>
@@ -775,37 +775,37 @@ function ChatContent() {
                 <motion.button
                   key={`${thread.listing_id}:${thread.other_user_id}`}
                   onClick={() => openThread(thread)}
-                  className={`w-full text-left p-4 rounded-xl border transition-all cursor-pointer ${
+                  className={`w-full text-left p-4 rounded-2xl border transition-all cursor-pointer ${
                     activeThread?.listing_id === thread.listing_id &&
                     activeThread?.other_user_id === thread.other_user_id
-                      ? 'border-brand-indigo/50 bg-brand-indigo/10 shadow-[0_0_15px_rgba(91,77,255,0.15)]'
-                      : 'border-border bg-surface hover:border-brand-indigo/30 hover:bg-surface-high'
+                      ? 'border-emerald-400/40 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.15)]'
+                      : 'glass hover:border-white/20'
                   }`}
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
                 >
                   <div className="flex items-start gap-3">
-                    {/* Warm Glowing Avatar */}
-                    <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-brand-indigo to-brand-mint p-[1.5px] shadow-md shrink-0">
-                      <div className="w-full h-full rounded-full bg-surface-low flex items-center justify-center text-xs font-bold text-primary">
+                    {/* Avatar */}
+                    <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 p-[1.5px] shadow-md shrink-0">
+                      <div className="w-full h-full rounded-full bg-slate-950 flex items-center justify-center text-xs font-bold text-primary">
                         {thread.other_user_name.charAt(0).toUpperCase()}
                       </div>
                     </div>
                     
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-1">
-                        <p className="text-sm font-semibold truncate text-primary">{thread.other_user_name}</p>
+                        <p className="text-sm font-bold truncate text-primary">{thread.other_user_name}</p>
                         {thread.last_message_at && (
-                          <span className="text-[9px] font-mono text-subtle shrink-0">{relativeTime(thread.last_message_at)}</span>
+                          <span className="text-[10px] text-subtle shrink-0">{relativeTime(thread.last_message_at)}</span>
                         )}
                       </div>
                       
-                      {/* Monospace course code tag */}
+                      {/* Course tag */}
                       <div className="flex items-center gap-1.5 mt-1">
-                        <span className="text-[8px] font-mono font-bold px-1 py-0.2 bg-surface-high border border-border text-brand-indigo rounded-sm uppercase tracking-wider">
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full">
                           {code}
                         </span>
-                        <p className="text-[10px] text-muted truncate">
+                        <p className="text-xs text-muted truncate">
                           {thread.listing_title}
                         </p>
                       </div>
@@ -815,7 +815,7 @@ function ChatContent() {
                       )}
                     </div>
                     {thread.unread_count > 0 && (
-                      <span className="w-5 h-5 rounded-full bg-brand-indigo flex items-center justify-center text-[10px] text-white font-bold shrink-0">
+                      <span className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[10px] text-slate-950 font-bold shrink-0">
                         {thread.unread_count}
                       </span>
                     )}
@@ -827,7 +827,7 @@ function ChatContent() {
         </div>
 
         {/* ── Conversation pane ── */}
-        <div className="lg:col-span-2 glass rounded-xl border border-border flex flex-col overflow-hidden">
+        <div className={`lg:col-span-2 glass rounded-2xl border border-white/10 flex flex-col overflow-hidden ${activeThread ? 'block' : 'hidden lg:flex'}`}>
           <AnimatePresence mode="wait">
             {!activeThread ? (
               <motion.div
@@ -836,14 +836,14 @@ function ChatContent() {
                 animate={{ opacity: 1 }}
                 className="flex-1 flex flex-col items-center justify-center gap-4 text-center p-8"
               >
-                <div className="w-14 h-14 rounded-full bg-surface-low border border-border/80 flex items-center justify-center text-muted shadow-inner">
+                <div className="w-14 h-14 rounded-full glass border border-white/10 flex items-center justify-center text-muted shadow-inner">
                   <svg className="w-7 h-7 text-subtle" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 </div>
                 <p className="text-lg font-display font-bold">Select a conversation</p>
                 <p className="text-sm text-muted max-w-xs">
-                  Choose a thread from the left list, or launch messaging from a listing details page.
+                  Choose a thread from the list, or launch messaging from a listing details page.
                 </p>
               </motion.div>
             ) : (
@@ -854,8 +854,17 @@ function ChatContent() {
                 className="flex flex-col h-full"
               >
                 {/* Header */}
-                <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-indigo to-brand-mint flex items-center justify-center text-white font-bold text-sm shrink-0">
+                <div className="px-5 py-4 border-b border-white/10 flex items-center gap-3">
+                  <button
+                    onClick={() => setActiveThread(null)}
+                    className="lg:hidden p-1.5 text-muted hover:text-white rounded-full bg-surface-low border border-white/10"
+                    title="Back to threads"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-slate-950 font-bold text-sm shrink-0">
                     {activeThread.other_user_name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
