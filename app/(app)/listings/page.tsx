@@ -204,11 +204,11 @@ function ListingCard({ listing, index }: { listing: Listing; index: number }) {
       transition={{ duration: 0.4, delay: index * 0.05 }}
     >
       <Link href={`/listings/${listing.id}`}>
-        <div className="relative group rounded-xl border border-border bg-surface transition-all duration-300 overflow-hidden cursor-pointer hover:border-brand-indigo/50 hover:shadow-[0_8px_30px_rgba(91,77,255,0.08)] hover:-translate-y-0.5">
+        <div className="relative group rounded-2xl glass glass-hover overflow-hidden cursor-pointer">
           {/* Boosted badge */}
           {listing.is_boosted && (
-            <div className="absolute top-3 right-3 z-10 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-amber/10 border border-brand-amber/40 text-brand-amber text-[9px] font-bold tracking-wider shadow-md uppercase">
-              <svg className="w-3 h-3 text-brand-amber shrink-0 animate-pulse" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+            <div className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-semibold shadow-lg backdrop-blur-md uppercase tracking-wider">
+              <svg className="w-3 h-3 text-amber-400 shrink-0 animate-pulse" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
               Featured
@@ -221,78 +221,72 @@ function ListingCard({ listing, index }: { listing: Listing; index: number }) {
             <img
               src={listing.images[0]}
               alt={listing.title}
-              className="h-40 w-full object-cover group-hover:scale-[1.02] transition-transform duration-500 border-b border-border/40"
+              className="h-44 w-full object-cover group-hover:scale-[1.03] transition-transform duration-500 border-b border-white/10"
             />
           ) : (
-            <div className="h-40 bg-gradient-to-br from-surface-low to-surface-high flex items-center justify-center select-none border-b border-border/40">
+            <div className="h-44 bg-gradient-to-br from-surface-low to-surface-high flex items-center justify-center select-none border-b border-white/10">
               {typeIcons[listing.type]}
             </div>
           )}
 
           {/* Content */}
-          <div className="p-4 space-y-3.5">
-            {/* Friendly Category Line */}
-            <div className="flex items-center gap-2 border-b border-border/40 pb-2">
-              <span className="text-[10px] font-bold text-brand-indigo uppercase tracking-wider">
+          <div className="p-5 space-y-3.5">
+            {/* Category Line */}
+            <div className="flex items-center gap-2 border-b border-white/10 pb-2.5">
+              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
                 {courseCode}
               </span>
-              <span className={`text-[9px] font-semibold uppercase px-2 py-0.5 border rounded-full ${typeColor[listing.type]}`}>
+              <span className={`text-[9px] font-semibold uppercase px-2.5 py-0.5 border rounded-full ${typeColor[listing.type]}`}>
                 {TYPE_LABELS[listing.type]}
               </span>
-              <span className="text-[10px] text-muted font-medium truncate max-w-[80px]">
+              <span className="text-[10px] text-muted font-medium truncate max-w-[90px]">
                 {listing.category}
               </span>
               {listing.condition && (
-                <span className="ml-auto text-[9px] border border-border/80 px-2 py-0.5 rounded-full bg-surface-low text-muted uppercase">
+                <span className="ml-auto text-[9px] border border-white/10 px-2.5 py-0.5 rounded-full bg-surface-high/60 text-muted uppercase">
                   {CONDITION_LABELS[listing.condition]}
                 </span>
               )}
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-sm font-semibold text-primary leading-snug line-clamp-1 group-hover:text-brand-indigo transition-colors duration-200">
+              <h3 className="text-sm font-bold text-primary leading-snug line-clamp-1 group-hover:text-emerald-400 transition-colors duration-200">
                 {listing.title}
               </h3>
-              <p className="text-xs text-subtle leading-relaxed line-clamp-2 h-8">
+              <p className="text-xs text-muted leading-relaxed line-clamp-2 h-8">
                 {listing.description}
               </p>
             </div>
 
-            <div className="flex items-center justify-between pt-2 border-t border-border/40">
-              {/* Friendly pill price tag */}
-              <div className="px-3 py-1 bg-brand-indigo/10 border border-brand-indigo/20 rounded-full font-bold text-sm text-brand-mint">
+            <div className="flex items-center justify-between pt-2.5 border-t border-white/10">
+              {/* Pill price tag */}
+              <div className="px-3.5 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full font-bold text-sm text-emerald-400">
                 ₦{listing.price.toLocaleString()}
                 {listing.type === 'service' && (
-                  <span className="text-[9px] font-normal text-subtle">/hr</span>
+                  <span className="text-[9px] font-normal text-muted">/hr</span>
                 )}
               </div>
               
-              {/* Human Seller Info Block */}
-              <div className="flex items-center gap-2 group/seller">
+              {/* Seller Info Block */}
+              <div className="flex items-center gap-2.5 group/seller">
                 <div className="flex flex-col items-end">
-                  <span className="text-[10px] text-primary font-semibold group-hover/seller:text-brand-indigo transition-colors duration-200">
+                  <span className="text-[10px] text-primary font-semibold group-hover/seller:text-emerald-400 transition-colors duration-200">
                     {sellerName}
                   </span>
                   <div className="flex items-center gap-1">
                     {sellerLevel && (
-                      <span className="text-[9px] text-subtle font-medium bg-surface-high px-1 rounded-sm font-mono">
+                      <span className="text-[9px] text-muted font-medium bg-surface-high px-1.5 rounded-full font-mono">
                         {sellerLevel}L
                       </span>
                     )}
                     <TrustBadge score={trustScore} />
                   </div>
                 </div>
-                {/* Warm glowing avatar */}
-                <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-brand-indigo via-brand-indigo/80 to-brand-mint p-[1.5px] shadow-[0_0_10px_rgba(91,77,255,0.4)] transition-transform duration-300 group-hover/seller:scale-105">
+                {/* Glowing avatar */}
+                <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 p-[1.5px] shadow-[0_0_12px_rgba(16,185,129,0.3)] transition-transform duration-300 group-hover/seller:scale-105">
                   <div className="w-full h-full rounded-full bg-surface-low flex items-center justify-center text-[10px] font-bold text-primary">
                     {sellerName.charAt(0).toUpperCase()}
                   </div>
-                  <div 
-                    className="absolute inset-0 rounded-full border border-brand-mint/40 opacity-70 animate-pulse pointer-events-none"
-                    style={{
-                      borderColor: trustScore >= 90 ? 'var(--color-brand-mint)' : trustScore >= 70 ? 'var(--color-brand-amber)' : 'var(--color-error)'
-                    }}
-                  />
                 </div>
               </div>
             </div>
@@ -391,23 +385,23 @@ export default function ListingsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search listings, sellers…"
-          className="w-full h-12 bg-surface border border-border rounded-xl pl-11 pr-4 text-sm text-primary placeholder:text-subtle/60 input-glow transition-all"
+          className="w-full h-12 bg-surface-low border border-white/10 rounded-2xl pl-11 pr-4 text-sm text-primary placeholder:text-subtle/50 input-glow transition-all"
         />
       </div>
 
       {/* Category pills */}
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-border/20">
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-white/10">
         {CATEGORIES.map((cat) => (
           <button
             key={cat.value}
             onClick={() => setActiveCategory(cat.value)}
-            className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold border transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+            className={`shrink-0 px-5 py-2.5 rounded-full text-xs font-semibold border transition-all duration-300 flex items-center gap-2 cursor-pointer ${
               activeCategory === cat.value
-                ? 'bg-brand-indigo border-brand-indigo text-white shadow-[0_4px_12px_rgba(91,77,255,0.3)]'
-                : 'bg-surface-low border-border/80 text-muted hover:border-brand-indigo/40 hover:text-primary'
+                ? 'bg-gradient-to-r from-emerald-500 to-teal-400 border-emerald-400/30 text-slate-950 font-bold shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+                : 'glass text-muted hover:border-white/20 hover:text-primary'
             }`}
           >
-            {cat.icon && <span className="opacity-75">{cat.icon}</span>}
+            {cat.icon && <span className="opacity-80">{cat.icon}</span>}
             {cat.label}
           </button>
         ))}
@@ -420,10 +414,10 @@ export default function ListingsPage() {
         </span>
         <Link
           href="/listings/new"
-          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-gradient-to-r from-brand-indigo to-brand-mint text-white hover:shadow-[0_0_16px_rgba(91,77,255,0.35)] hover:brightness-110 active:scale-95 transition-all"
+          className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 hover:shadow-[0_0_25px_rgba(16,185,129,0.35)] hover:brightness-110 active:scale-95 transition-all"
         >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
           </svg>
           Post a Listing
         </Link>

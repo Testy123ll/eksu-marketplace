@@ -18,7 +18,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="text-xs font-semibold uppercase tracking-wider text-muted"
+            className="text-xs font-medium tracking-wide text-muted"
           >
             {label}
           </label>
@@ -29,10 +29,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             type={inputType}
             className={`
-              w-full px-4 py-3 rounded-lg text-sm text-primary
-              bg-canvas border border-border/80
-              placeholder:text-subtle/60
-              transition-all duration-200
+              w-full px-4 py-3 rounded-xl text-sm text-primary
+              bg-surface-low border border-white/10
+              placeholder:text-subtle/50
+              transition-all duration-300
               input-glow
               ${isPassword ? 'pr-10' : ''}
               ${error ? 'border-error/60 focus:border-error' : ''}

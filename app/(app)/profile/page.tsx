@@ -497,21 +497,21 @@ export default function ProfilePage() {
           className="lg:col-span-2 space-y-6"
         >
           {/* Billing & Profile details: Dense tabular layout */}
-          <div className="border border-border bg-surface-low/80 p-5 rounded-sm relative font-mono text-xs space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-border/40 pb-2">
-              <span className="font-bold text-brand-indigo uppercase tracking-widest text-[9px]">SYS_REGISTRY_LEDGER_V1.0</span>
-              <span className="text-[8px] text-subtle uppercase">VERIFIED</span>
+          <div className="glass rounded-2xl p-6 font-mono text-xs space-y-4 shadow-xl">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <span className="font-bold text-emerald-400 uppercase tracking-widest text-[10px]">SYS_REGISTRY_LEDGER_V2.0</span>
+              <span className="text-[9px] text-muted uppercase font-semibold">VERIFIED</span>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-border/40 text-subtle text-[9px] uppercase tracking-wider">
+                  <tr className="border-b border-white/10 text-subtle text-[9px] uppercase tracking-wider">
                     <th className="py-2 pr-4 font-bold">Registry Key</th>
                     <th className="py-2 font-bold">Registered Value</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/20 text-muted">
+                <tbody className="divide-y divide-white/5 text-muted">
                   <tr>
                     <td className="py-2.5 pr-4 text-[10px] uppercase font-bold text-subtle">ACCOUNT_NAME</td>
                     <td className="py-2.5 text-primary font-medium">{profile?.full_name || profile?.business_name || '—'}</td>
@@ -554,22 +554,22 @@ export default function ProfilePage() {
           </div>
 
           {/* Monnify Wallet & Payout Settings */}
-          <div className="border border-border bg-surface-low/80 p-5 rounded-sm relative font-mono text-xs space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-border/40 pb-2">
-              <span className="font-bold text-brand-indigo uppercase tracking-widest text-[9px]">MONNIFY_WALLET_LEDGER</span>
-              <span className="text-[8px] text-brand-mint uppercase font-bold">SECURED</span>
+          <div className="glass rounded-2xl p-6 font-mono text-xs space-y-4 shadow-xl">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <span className="font-bold text-emerald-400 uppercase tracking-widest text-[10px]">MONNIFY_WALLET_LEDGER</span>
+              <span className="text-[9px] text-emerald-400 uppercase font-bold">SECURED</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Wallet Balance and Virtual account info */}
-              <div className="space-y-3 bg-surface/50 border border-border/60 p-4 rounded-sm">
+              <div className="space-y-3 bg-surface-low/60 border border-white/10 p-4 rounded-xl">
                 <div>
-                  <span className="text-[8px] font-bold text-subtle uppercase tracking-widest">Available Wallet Balance</span>
-                  <p className="text-2xl font-display font-black text-brand-mint mt-1">₦{profile?.wallet_balance?.toLocaleString() || '0.00'}</p>
+                  <span className="text-[9px] font-bold text-subtle uppercase tracking-widest">Available Wallet Balance</span>
+                  <p className="text-2xl font-display font-black text-emerald-400 mt-1">₦{profile?.wallet_balance?.toLocaleString() || '0.00'}</p>
                 </div>
 
-                <div className="border-t border-border/40 pt-2 space-y-1">
-                  <span className="text-[8px] font-bold text-subtle uppercase tracking-widest">Dedicated Funding Account</span>
+                <div className="border-t border-white/10 pt-2 space-y-1">
+                  <span className="text-[9px] font-bold text-subtle uppercase tracking-widest">Dedicated Funding Account</span>
                   {profile?.virtual_account_number ? (
                     <div className="text-[10px] text-primary leading-normal space-y-0.5">
                       <div>Bank: <span className="font-bold text-white">{profile.virtual_bank_name}</span></div>
@@ -579,12 +579,12 @@ export default function ProfilePage() {
                   ) : (
                     <p className="text-[10px] text-subtle italic">Virtual funding account not active. Please complete onboarding verification.</p>
                   )}
-                  <p className="text-[8px] text-subtle leading-normal mt-1">Transfer funds to this account number to credit your wallet balance for purchase escrows.</p>
+                  <p className="text-[9px] text-subtle leading-normal mt-1">Transfer funds to this account number to credit your wallet balance for purchase escrows.</p>
                 </div>
               </div>
 
               {/* Personal Bank Payout details */}
-              <div className="space-y-3 bg-surface/50 border border-border/60 p-4 rounded-sm flex flex-col justify-between">
+              <div className="space-y-3 bg-surface-low/60 border border-white/10 p-4 rounded-xl flex flex-col justify-between">
                 <div>
                   <span className="text-[8px] font-bold text-subtle uppercase tracking-widest">Your Bank Payout Destination</span>
                   {profile?.payout_account_number ? (
