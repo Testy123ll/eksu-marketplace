@@ -1,9 +1,11 @@
-// Monnify Payment Gateway Integration Service Layer
-
-const BASE_URL = process.env.MONNIFY_BASE_URL || 'https://sandbox.monnify.com'
-const API_KEY = process.env.MONNIFY_API_KEY || 'MK_TEST_XXXXXXXXXX'
-const SECRET_KEY = process.env.MONNIFY_SECRET_KEY || 'XXXXXXXXXXXXXXXXXXXX'
-const CONTRACT_CODE = process.env.MONNIFY_CONTRACT_CODE || '0000000000'
+function getConfig() {
+  return {
+    BASE_URL: process.env.MONNIFY_BASE_URL || 'https://sandbox.monnify.com',
+    API_KEY: process.env.MONNIFY_API_KEY || 'MK_TEST_XXXXXXXXXX',
+    SECRET_KEY: process.env.MONNIFY_SECRET_KEY || 'XXXXXXXXXXXXXXXXXXXX',
+    CONTRACT_CODE: process.env.MONNIFY_CONTRACT_CODE || '0000000000',
+  }
+}
 
 interface ReservedAccountResponse {
   success: boolean
@@ -24,6 +26,7 @@ interface DisburseResponse {
 // 1. Fetch Bearer Access Token from Monnify
 export async function getMonnifyAccessToken(): Promise<string | null> {
   try {
+    const { BASE_URL, API_KEY, SECRET_KEY } = getConfig()
     const authHeader = Buffer.from(`${API_KEY}:${SECRET_KEY}`).toString('base64')
     const res = await fetch(`${BASE_URL}/api/v1/auth/login`, {
       method: 'POST',
@@ -52,6 +55,7 @@ export async function generateReservedAccount(
   fullName: string
 ): Promise<ReservedAccountResponse> {
   try {
+    const { BASE_URL, API_KEY, CONTRACT_CODE } = getConfig()
     // If running in sandbox environment with dummy keys, mock successful generation to allow offline testing
     if (API_KEY === 'MK_TEST_XXXXXXXXXX') {
       const mockAccountNo = Math.floor(1000000000 + Math.random() * 9000000000).toString()
@@ -89,13 +93,14 @@ export async function generateReservedAccount(
       throw new Error(json.responseMessage || 'Reserved account request rejected by Monnify')
     }
 
-    const account = json.responseBody.accounts?.[0]
+    const body = json.responseBody
+    const account = body.accounts?.[0] || body
     return {
       success: true,
-      bankName: account?.bankName || 'Wema Bank',
-      accountNumber: account?.accountNumber || '',
-      accountName: json.responseBody.accountName,
-      accountReference: json.responseBody.accountReference,
+      bankName: account?.bankName || body?.bankName || 'Wema Bank',
+      accountNumber: account?.accountNumber || body?.accountNumber || '',
+      accountName: body?.accountName || `BataMarket - ${fullName}`,
+      accountReference: body?.accountReference || userId,
     }
   } catch (error: any) {
     return { success: false, error: error.message || 'Unknown reserved account error' }
@@ -110,6 +115,7 @@ export async function disbursePayout(
   narration: string
 ): Promise<DisburseResponse> {
   try {
+    const { BASE_URL, API_KEY } = getConfig()
     const reference = `payout_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`
 
     // Mock response for testing/dummy environment
